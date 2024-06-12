@@ -159,7 +159,6 @@ int main()
     }
 
     Node *values[actualSize];
-    int orderedTimes[actualSize];
 
     orderValues(values, string, times, actualSize);
 
