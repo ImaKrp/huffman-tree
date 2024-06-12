@@ -5,6 +5,7 @@
 typedef struct node
 {
     char charCode;
+    int occurrences;
     struct node *left;
     struct node *right;
 } Node;
@@ -22,15 +23,28 @@ void printArray(int arr[], int size)
     printf(" ]\n");
 }
 
-void printCArray(char arr[], int size)
+void printNodeCharArray(Node *arr[], int size)
 {
     printf("[ ");
     for (int i = 0; i < size; i++)
     {
         if (i < size - 1)
-            printf("%c, ", arr[i]);
+            printf("%c, ", arr[i]->charCode);
         else
-            printf("%c", arr[i]);
+            printf("%c", arr[i]->charCode);
+    }
+    printf(" ]\n");
+}
+
+void printNodeOccurrencesArray(Node *arr[], int size)
+{
+    printf("[ ");
+    for (int i = 0; i < size; i++)
+    {
+        if (i < size - 1)
+            printf("%d, ", arr[i]->occurrences);
+        else
+            printf("%d", arr[i]->occurrences);
     }
     printf(" ]\n");
 }
@@ -44,69 +58,22 @@ int toLower(char c)
     return c;
 }
 
-void getUniqueCharacters(char string[], int size, char *uniqueChars, int *uniqueSize)
+void createTree(Node *values[], int size)
 {
-    int actualSize = 0;
-    int flag = -1;
-    for (int i = 0; i < size; i++)
-    {
-        char c = string[i];
-        for (int j = 0; j < actualSize; j++)
-        {
-            if (uniqueChars[j] == c)
-            {
-                flag = j;
-                break;
-            }
-        }
-        if (flag < 0)
-        {
-            uniqueChars[actualSize] = c;
-            actualSize++;
-        }
-        flag = -1;
-    }
-
-    *uniqueSize = actualSize;
+    printNodeCharArray(values, size);
+    printNodeOccurrencesArray(values, size);
 }
 
-void createTree(char string[], int size)
+void orderValues(Node *values[], char string[], int times[], int actualSize)
 {
-    char characters[size];
-    int actualSize;
-
-    getUniqueCharacters(string, strlen(string), characters, &actualSize);
-
-    int repeatTimes[actualSize];
-
     for (int i = 0; i < actualSize; i++)
     {
-        repeatTimes[i] = 0;
-    }
-
-    int flag = -1;
-
-    for (int i = 0; i < size; i++)
-    {
-        char c = string[i];
-        for (int j = 0; j < actualSize; j++)
-        {
-            if (characters[j] == c)
-            {
-                flag = j;
-                break;
-            }
-        }
-
-        if (flag == -1)
-        {
-            repeatTimes[i] = 1;
-        }
-        else
-        {
-            repeatTimes[flag]++;
-        }
-        flag = -1;
+        Node *node = (Node *)malloc(sizeof(Node));
+        node->charCode = string[i];
+        node->left = NULL;
+        node->right = NULL;
+        node->occurrences = times[i];
+        values[i] = node;
     }
 
     int swapped = 0;
@@ -114,24 +81,20 @@ void createTree(char string[], int size)
     {
         for (int j = 0; j < actualSize; j++)
         {
-            if (repeatTimes[i] < repeatTimes[j])
+            if (values[i]->occurrences < values[j]->occurrences)
             {
-                int temp = repeatTimes[i];
-                repeatTimes[i] = repeatTimes[j];
-                repeatTimes[j] = temp;
-
-                char tempChar = characters[i];
-                characters[i] = characters[j];
-                characters[j] = tempChar;
+                Node *temp = values[i];
+                values[i] = values[j];
+                values[j] = temp;
                 swapped = 1;
             }
-            if (repeatTimes[i] == repeatTimes[j])
+            if (values[i]->occurrences == values[j]->occurrences)
             {
-                if (characters[i] < characters[j])
+                if (values[i]->charCode < values[j]->charCode)
                 {
-                    char tempChar = characters[i];
-                    characters[i] = characters[j];
-                    characters[j] = tempChar;
+                    Node *temp = values[i];
+                    values[i] = values[j];
+                    values[j] = temp;
                     swapped = 1;
                 }
             }
@@ -139,8 +102,6 @@ void createTree(char string[], int size)
         if (swapped == 0)
             break;
     }
-    printCArray(characters, actualSize);
-    printArray(repeatTimes, actualSize);
 }
 
 int main()
@@ -152,31 +113,58 @@ int main()
         exit(0);
     }
 
-    char *string = (char *)malloc(sizeof(char));
-
+    int count = 0;
     char c = getc(origin);
-    int newSize;
     while (c != EOF)
     {
-        newSize = strlen(string) + 1;
-
-        char *characters = (char *)realloc(string, newSize);
-
-        if (characters == NULL)
-        {
-            fclose(origin);
-            exit(1);
-        }
-
-        c = toLower(c);
-
-        string = characters;
-        string[newSize - 1] = c;
-
+        count++;
         c = getc(origin);
     }
 
-    createTree(string, newSize);
+    int times[count];
+    char string[count];
 
+    for (int i = 0; i < count; i++)
+    {
+        times[i] = -1;
+        string[i] = '\0';
+    }
+
+    rewind(origin);
+
+    int actualSize = 0;
+    for (int i = 0; i < count; i++)
+    {
+        int flag = -1;
+        char c = toLower(getc(origin));
+        for (int j = 0; j < actualSize; j++)
+        {
+            if (string[j] == c)
+            {
+                flag = j;
+                break;
+            }
+        }
+        if (flag < 0)
+        {
+            string[actualSize] = c;
+            times[actualSize] = 1;
+            actualSize++;
+        }
+        else
+        {
+            times[flag]++;
+        }
+        flag = -1;
+    }
+
+    Node *values[actualSize];
+    int orderedTimes[actualSize];
+
+    orderValues(values, string, times, actualSize);
+
+    createTree(values, actualSize);
+
+    fclose(origin);
     return 0;
 }
