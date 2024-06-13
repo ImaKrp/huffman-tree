@@ -154,9 +154,10 @@ void printCodification(Node *root, char path[], int prevSize)
 {
     if (root->left == NULL && root->right == NULL)
     {
-        if(root->charCode == '\n')
-        printf("/n");
-        else printf("%c", root->charCode);
+        if (root->charCode == '\n')
+            printf("/n");
+        else
+            printf("%c", root->charCode);
         printf(": %s\n", path);
     }
     else
@@ -191,9 +192,104 @@ void printCodification(Node *root, char path[], int prevSize)
     }
 }
 
+void codeLetter(FILE *output, char letter, Node *root, char path[], int prevSize)
+{
+    if (root->charCode == letter)
+    {
+        fprintf(output, "%s", path);
+        return;
+    }
+    else if (root->left == NULL && root->right == NULL)
+    {
+        return;
+    }
+
+    int size = prevSize + 2;
+    char left[size];
+    char right[size];
+
+    for (int i = 0; i < size; i++)
+    {
+        left[i] = '\0';
+        right[i] = '\0';
+    }
+
+    for (int i = 0; i < size; i++)
+    {
+        if (i == strlen(path))
+        {
+            left[i] = '0';
+            right[i] = '1';
+            break;
+        }
+        else
+        {
+            left[i] = path[i];
+            right[i] = path[i];
+        }
+    }
+
+    codeLetter(output, letter, root->left, left, size);
+    codeLetter(output, letter, root->right, right, size);
+}
+
+void writeCoded(Node *root, char text[], int size)
+{
+    FILE *output = fopen("codificado.txt", "a");
+    for (int i = 0; i < size; i++)
+    {
+        codeLetter(output, text[i], root, "", 0);
+    }
+    fclose(output);
+    return;
+}
+
+void decodeLetter(FILE *input, FILE *output, Node *root, Node *actual)
+{
+    char c = getc(input);
+    if (c == EOF || actual == NULL)
+        return;
+
+    if (c == '1')
+    {
+        if (actual->right && actual->right->charCode != '\0')
+        {
+            fprintf(output, "%c", actual->right->charCode);
+            decodeLetter(input, output, root, root);
+            return;
+        }
+        decodeLetter(input, output, root, actual->right);
+    }
+    else if (c == '0')
+    {
+        if (actual->left && actual->left->charCode != '\0')
+        {
+            fprintf(output, "%c", actual->left->charCode);
+            decodeLetter(input, output, root, root);
+            return;
+        }
+        decodeLetter(input, output, root, actual->left);
+    }
+}
+
+void writeDecoded(Node *root)
+{
+    FILE *input = fopen("codificado.txt", "r");
+    FILE *output = fopen("decodificado.txt", "a");
+    decodeLetter(input, output, root, root);
+    decodeLetter(input, output, root, root);
+    decodeLetter(input, output, root, root);
+    fclose(input);
+    fclose(output);
+    return;
+}
+
 int main()
 {
     FILE *origin = fopen("./amostra.txt", "r");
+
+    remove("codificado.txt");
+    remove("decodificado.txt");
 
     if (origin == NULL)
     {
@@ -211,11 +307,16 @@ int main()
     int times[count];
     char string[count];
 
+    char text[count + 1];
+
     for (int i = 0; i < count; i++)
     {
         times[i] = -1;
         string[i] = '\0';
+        text[i] = '\0';
     }
+
+    text[count] = '\0';
 
     rewind(origin);
 
@@ -224,6 +325,7 @@ int main()
     {
         int flag = -1;
         char c = toLower(getc(origin));
+        text[i] = c;
         for (int j = 0; j < actualSize; j++)
         {
             if (string[j] == c)
@@ -253,6 +355,9 @@ int main()
 
     Node *root = values[0];
     printCodification(root, "", 0);
+
+    writeCoded(root, text, count);
+    writeDecoded(root);
     fclose(origin);
     return 0;
 }
