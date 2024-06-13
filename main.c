@@ -277,8 +277,6 @@ void writeDecoded(Node *root)
     FILE *input = fopen("codificado.txt", "r");
     FILE *output = fopen("decodificado.txt", "a");
     decodeLetter(input, output, root, root);
-    decodeLetter(input, output, root, root);
-    decodeLetter(input, output, root, root);
     fclose(input);
     fclose(output);
     return;
