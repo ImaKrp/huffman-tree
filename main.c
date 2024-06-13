@@ -28,10 +28,12 @@ void printNodeCharArray(Node *arr[], int size)
     printf("[ ");
     for (int i = 0; i < size; i++)
     {
-        if (i < size - 1)
-            printf("%c, ", arr[i]->charCode);
-        else
+        if (!arr[i])
+            printf("NULL");
+        if (arr[i])
             printf("%c", arr[i]->charCode);
+        if (i < size - 1)
+            printf(", ");
     }
     printf(" ]\n");
 }
@@ -41,10 +43,12 @@ void printNodeOccurrencesArray(Node *arr[], int size)
     printf("[ ");
     for (int i = 0; i < size; i++)
     {
-        if (i < size - 1)
-            printf("%d, ", arr[i]->occurrences);
-        else
+        if (!arr[i])
+            printf("NULL");
+        if (arr[i])
             printf("%d", arr[i]->occurrences);
+        if (i < size - 1)
+            printf(", ");
     }
     printf(" ]\n");
 }
@@ -60,8 +64,55 @@ int toLower(char c)
 
 void createTree(Node *values[], int size)
 {
-    printNodeCharArray(values, size);
-    printNodeOccurrencesArray(values, size);
+    for (int i = 0; i < size - 1; i++)
+    {
+        Node *node = (Node *)malloc(sizeof(Node));
+        node->charCode = '\0';
+        node->left = values[0];
+        node->right = values[1];
+        int newOccurences = values[0]->occurrences + values[1]->occurrences;
+        node->occurrences = newOccurences;
+
+        values[0] = NULL;
+        values[1] = NULL;
+
+        int curr = 0;
+        int spaced = 0;
+        for (int j = 0; j < size - i; j++)
+        {
+            if (values[j] == NULL)
+                continue;
+            if (values[j]->occurrences < newOccurences)
+            {
+                values[curr] = values[j];
+                values[j] = NULL;
+                curr++;
+                continue;
+            }
+            if (values[j]->occurrences >= newOccurences && spaced == 0)
+            {
+                spaced = 1;
+                curr++;
+            }
+            if (values[j]->occurrences >= newOccurences)
+            {
+                values[curr] = values[j];
+                values[j] = NULL;
+                curr++;
+                continue;
+            }
+        }
+        int j = 0;
+        while (1)
+        {
+            if (values[j] == NULL)
+            {
+                values[j] = node;
+                break;
+            }
+            j++;
+        }
+    }
 }
 
 void orderValues(Node *values[], char string[], int times[], int actualSize)
@@ -76,7 +127,6 @@ void orderValues(Node *values[], char string[], int times[], int actualSize)
         values[i] = node;
     }
 
-    int swapped = 0;
     for (int i = 0; i < actualSize; i++)
     {
         for (int j = 0; j < actualSize; j++)
@@ -86,21 +136,58 @@ void orderValues(Node *values[], char string[], int times[], int actualSize)
                 Node *temp = values[i];
                 values[i] = values[j];
                 values[j] = temp;
-                swapped = 1;
             }
-            if (values[i]->occurrences == values[j]->occurrences)
+            else if (values[i]->occurrences == values[j]->occurrences)
             {
                 if (values[i]->charCode < values[j]->charCode)
                 {
                     Node *temp = values[i];
                     values[i] = values[j];
                     values[j] = temp;
-                    swapped = 1;
                 }
             }
         }
-        if (swapped == 0)
-            break;
+    }
+}
+
+void printCodification(Node *root, char path[], int prevSize)
+{
+    if (root->left == NULL && root->right == NULL)
+    {
+        if(root->charCode == '\n')
+        printf("/n");
+        else printf("%c", root->charCode);
+        printf(": %s\n", path);
+    }
+    else
+    {
+        int size = prevSize + 2;
+        char left[size];
+        char right[size];
+
+        for (int i = 0; i < size; i++)
+        {
+            left[i] = '\0';
+            right[i] = '\0';
+        }
+
+        for (int i = 0; i < size; i++)
+        {
+            if (i == strlen(path))
+            {
+                left[i] = '0';
+                right[i] = '1';
+                break;
+            }
+            else
+            {
+                left[i] = path[i];
+                right[i] = path[i];
+            }
+        }
+
+        printCodification(root->left, left, size);
+        printCodification(root->right, right, size);
     }
 }
 
@@ -164,6 +251,8 @@ int main()
 
     createTree(values, actualSize);
 
+    Node *root = values[0];
+    printCodification(root, "", 0);
     fclose(origin);
     return 0;
 }
