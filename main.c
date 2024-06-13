@@ -196,7 +196,8 @@ void codeLetter(FILE *output, char letter, Node *root, char path[], int prevSize
 {
     if (root->charCode == letter)
     {
-        fprintf(output, "%s", path);
+        fwrite(path, 1, sizeof(char) * strlen(path), output);
+        // fprintf(output, "%s", path);
         return;
     }
     else if (root->left == NULL && root->right == NULL)
@@ -247,6 +248,7 @@ void writeCoded(Node *root, char text[], int size)
 void decodeLetter(FILE *input, FILE *output, Node *root, Node *actual)
 {
     char c = getc(input);
+
     if (c == EOF || actual == NULL)
         return;
 
