@@ -4,7 +4,7 @@
 
 ---
 
-## Função `printArray`
+## Função `printArray()`
 
 ```c
 void printArray(int arr[], int size)
@@ -29,7 +29,7 @@ void printArray(int arr[], int size)
 
 ---
 
-## Função `printNodeCharArray`
+## Função `printNodeCharArray()`
 
 ```c
 void printNodeCharArray(Node *arr[], int size)
@@ -57,7 +57,7 @@ void printNodeCharArray(Node *arr[], int size)
 
 ---
 
-## Função `printNodeOccurrencesArray`
+## Função `printNodeOccurrencesArray()`
 
 ```c
 void printNodeOccurrencesArray(Node *arr[], int size)
@@ -85,7 +85,7 @@ void printNodeOccurrencesArray(Node *arr[], int size)
 
 ---
 
-## Função `toLower`
+## Função `toLower()`
 
 ```c
 int toLower(char c)
@@ -104,7 +104,62 @@ int toLower(char c)
 
 ---
 
-## Função `createTree`
+<a id="orderValues"></a>
+
+## Função `orderValues()`
+
+```c
+void orderValues(Node *values[], char string[], int times[], int actualSize)
+{
+    // Cria nós para cada caractere com suas ocorrências
+    for (int i = 0; i < actualSize; i++)
+    {
+        Node *node = (Node *)malloc(sizeof(Node));
+        node->charCode = string[i];
+        node->left = NULL;
+        node->right = NULL;
+        node->occurrences = times[i];
+        values[i] = node;
+    }
+
+    // Ordena os nós com base nas ocorrências e nos caracteres associados
+    for (int i = 0; i < actualSize; i++)
+    {
+        for (int j = 0; j < actualSize; j++)
+        {
+            if (values[i]->occurrences < values[j]->occurrences)
+            {
+                Node *temp = values[i];
+                values[i] = values[j];
+                values[j] = temp;
+            }
+            else if (values[i]->occurrences == values[j]->occurrences)
+            {
+                if (values[i]->charCode < values[j]->charCode)
+                {
+                    Node *temp = values[i];
+                    values[i] = values[j];
+                    values[j] = temp;
+                }
+            }
+        }
+    }
+}
+```
+
+**Explicação:**
+
+- Esta função ordena uma lista de nós (`values`) com base nas ocorrências e nos caracteres associados.
+- Cria nós individuais para cada caractere com suas ocorrências.
+- Usa um algoritmo de ordenação simples (bubble sort) para classificar os nós.
+- Primeiro, ordena pelos números de ocorrências (`occurrences`).
+- Em caso de empate, ordena pelos códigos de caractere (`charCode`).
+
+---
+
+<a id="createTree"></a>
+
+## Função `createTree()`
 
 ```c
 void createTree(Node *values[], int size)
@@ -181,58 +236,9 @@ void createTree(Node *values[], int size)
 
 ---
 
-## Função `orderValues`
+<a id="printCodification"></a>
 
-```c
-void orderValues(Node *values[], char string[], int times[], int actualSize)
-{
-    // Cria nós para cada caractere com suas ocorrências
-    for (int i = 0; i < actualSize; i++)
-    {
-        Node *node = (Node *)malloc(sizeof(Node));
-        node->charCode = string[i];
-        node->left = NULL;
-        node->right = NULL;
-        node->occurrences = times[i];
-        values[i] = node;
-    }
-
-    // Ordena os nós com base nas ocorrências e nos caracteres associados
-    for (int i = 0; i < actualSize; i++)
-    {
-        for (int j = 0; j < actualSize; j++)
-        {
-            if (values[i]->occurrences < values[j]->occurrences)
-            {
-                Node *temp = values[i];
-                values[i] = values[j];
-                values[j] = temp;
-            }
-            else if (values[i]->occurrences == values[j]->occurrences)
-            {
-                if (values[i]->charCode < values[j]->charCode)
-                {
-                    Node *temp = values[i];
-                    values[i] = values[j];
-                    values[j] = temp;
-                }
-            }
-        }
-    }
-}
-```
-
-**Explicação:**
-
-- Esta função ordena uma lista de nós (`values`) com base nas ocorrências e nos caracteres associados.
-- Cria nós individuais para cada caractere com suas ocorrências.
-- Usa um algoritmo de ordenação simples (bubble sort) para classificar os nós.
-- Primeiro, ordena pelos números de ocorrências (`occurrences`).
-- Em caso de empate, ordena pelos códigos de caractere (`charCode`).
-
----
-
-## Função `printCodification`
+## Função `printCodification()`
 
 ```c
 void printCodification(Node *root, char path[], int prevSize)
@@ -298,7 +304,7 @@ void printCodification(Node *root, char path[], int prevSize)
 
 ---
 
-## Função `codeLetter`
+## Função `codeLetter()`
 
 ```c
 void codeLetter(FILE *output, char letter, Node *root, char path[], int prevSize)
@@ -361,7 +367,9 @@ void codeLetter(FILE *output, char letter, Node *root, char path[], int prevSize
 
 ---
 
-## Função `writeCoded`
+<a id="writeCoded"></a>
+
+## Função `writeCoded()`
 
 ```c
 void writeCoded(Node *root, char text[], int size)
@@ -385,7 +393,7 @@ void writeCoded(Node *root, char text[], int size)
 
 ---
 
-## Função `decodeLetter`
+## Função `decodeLetter()`
 
 ```c
 void decodeLetter(FILE *input, FILE *output, Node *root, Node *actual)
@@ -433,7 +441,9 @@ charCode != '\0')
 
 ---
 
-## Função `writeDecoded`
+<a id="writeDecoded"></a>
+
+## Função `writeDecoded()`
 
 ```c
 void writeDecoded(Node *root)
@@ -458,7 +468,7 @@ void writeDecoded(Node *root)
 
 ---
 
-## Função `main`
+## Função `main()`
 
 ```c
 int main()
@@ -569,12 +579,12 @@ int main()
 - Declara e inicializa arrays para armazenar caracteres e suas ocorrências.
 - Lê os caracteres do arquivo, contando suas ocorrências e armazenando-os nos arrays.
 - Cria uma lista de nós para cada caractere com suas ocorrências.
-- Ordena os nós com base nas ocorrências e caracteres associados.
-- Cria a árvore de Huffman.
+- Ordena os nós com base nas ocorrências e caracteres associados. [`orderValues`](#orderValues)
+- Cria a árvore de Huffman. [`createTree`](#createTree)
 - Define a raiz da árvore.
-- Imprime a codificação de Huffman.
-- Escreve o texto codificado em um arquivo.
-- Decodifica o texto e escreve em um arquivo.
+- Imprime a codificação de Huffman. [`printCodification`](#printCodification)
+- Escreve o texto codificado em um arquivo. [`writeCoded`](#writeCoded)
+- Decodifica o texto e escreve em um arquivo. [`writeDecoded`](#writeDecoded)
 - Libera a memória alocada para os nós.
 - Fecha o arquivo de origem.
 - Retorna 0 para indicar o sucesso da execução.
