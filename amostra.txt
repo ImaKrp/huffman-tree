@@ -1,1 +1,1 @@
-aaaa
+codificacao de huffman

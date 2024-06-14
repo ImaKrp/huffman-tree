@@ -56,9 +56,7 @@ void printNodeOccurrencesArray(Node *arr[], int size)
 int toLower(char c)
 {
     if (c >= 65 && c <= 90)
-    {
         return c + 32;
-    }
     return c;
 }
 
@@ -183,7 +181,8 @@ void printCodification(Node *root, char path[], int prevSize)
             right[i] = '\0';
         }
 
-        for (int i = 0; i < size; i++)
+        int i = 0;
+        while (i < size)
         {
             if (i == strlen(path))
             {
@@ -196,6 +195,7 @@ void printCodification(Node *root, char path[], int prevSize)
                 left[i] = path[i];
                 right[i] = path[i];
             }
+            i++;
         }
 
         printCodification(root->left, left, size);
@@ -213,9 +213,7 @@ void codeLetter(FILE *output, char letter, Node *root, char path[], int prevSize
         return;
     }
     else if (root->left == NULL && root->right == NULL)
-    {
         return;
-    }
 
     int size = prevSize + 2;
     char left[size];
@@ -227,7 +225,8 @@ void codeLetter(FILE *output, char letter, Node *root, char path[], int prevSize
         right[i] = '\0';
     }
 
-    for (int i = 0; i < size; i++)
+    int i = 0;
+    while (i < size)
     {
         if (i == strlen(path))
         {
@@ -240,6 +239,7 @@ void codeLetter(FILE *output, char letter, Node *root, char path[], int prevSize
             left[i] = path[i];
             right[i] = path[i];
         }
+        i++;
     }
 
     codeLetter(output, letter, root->left, left, size);
@@ -250,9 +250,7 @@ void writeCoded(Node *root, char text[], int size)
 {
     FILE *output = fopen("codificado.txt", "a");
     for (int i = 0; i < size; i++)
-    {
         codeLetter(output, text[i], root, "", 0);
-    }
     fclose(output);
     return;
 }
@@ -304,9 +302,7 @@ int main()
     remove("decodificado.txt");
 
     if (origin == NULL)
-    {
         exit(0);
-    }
 
     int count = 0;
     char c = getc(origin);
@@ -317,9 +313,7 @@ int main()
     }
 
     if (count == 0)
-    {
         exit(0);
-    }
 
     int times[count];
     char string[count];
@@ -343,13 +337,15 @@ int main()
         int flag = -1;
         char c = toLower(getc(origin));
         text[i] = c;
-        for (int j = 0; j < actualSize; j++)
+        int j = 0;
+        while (j < actualSize)
         {
             if (string[j] == c)
             {
                 flag = j;
                 break;
             }
+            j++;
         }
         if (flag < 0)
         {
@@ -358,9 +354,8 @@ int main()
             actualSize++;
         }
         else
-        {
             times[flag]++;
-        }
+
         flag = -1;
     }
 
@@ -374,12 +369,10 @@ int main()
     printCodification(root, "", 0);
 
     writeCoded(root, text, count);
-    writeDecoded(root);   
+    writeDecoded(root);
 
     for (int i = 0; i < actualSize; i++)
-    {
         free(values[i]);
-    }
 
     fclose(origin);
     return 0;
