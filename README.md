@@ -1,4 +1,4 @@
-# Documentação das Funções
+# Funcionamento de compressão de arquivos de texto através do algoritmo de Huffman
 
 ###### Júlio Carvalho Gonçalves e Marco Antônio Duz
 
