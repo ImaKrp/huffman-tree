@@ -304,6 +304,8 @@ void printCodification(Node *root, char path[], int prevSize)
 
 ---
 
+<a id="codeLetter"></a>
+
 ## Função `codeLetter()`
 
 ```c
@@ -388,10 +390,12 @@ void writeCoded(Node *root, char text[], int size)
 
 - Esta função escreve o texto codificado usando a árvore de Huffman em um arquivo de saída.
 - Abre o arquivo "codificado.txt" em modo de adição (`"a"`), para acrescentar ao conteúdo existente.
-- Itera sobre cada caractere no texto (`text`), chamando `codeLetter` para codificar e escrever o caractere codificado no arquivo.
+- Itera sobre cada caractere no texto (`text`), chamando [`codeLetter()`](#codeLetter) para codificar e escrever o caractere codificado no arquivo.
 - Fecha o arquivo de saída após escrever todo o texto codificado.
 
 ---
+
+<a id="decodeLetter"></a>
 
 ## Função `decodeLetter()`
 
@@ -463,7 +467,7 @@ void writeDecoded(Node *root)
 
 - Esta função lê o texto codificado do arquivo "codificado.txt" e decodifica usando a árvore de Huffman.
 - Abre o arquivo de entrada ("codificado.txt") em modo de leitura (`"r"`) e o arquivo de saída ("decodificado.txt") em modo de adição (`"a"`).
-- Chama `decodeLetter` para decodificar cada caractere do texto codificado e escrever o texto decodificado no arquivo de saída.
+- Chama [`decodeLetter()`](#decodeLetter) para decodificar cada caractere do texto codificado e escrever o texto decodificado no arquivo de saída.
 - Fecha os arquivos de entrada e saída após a decodificação.
 
 ---
