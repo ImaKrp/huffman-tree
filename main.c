@@ -206,8 +206,7 @@ void codeLetter(FILE *output, char letter, Node *root, char path[], int prevSize
     if(root==NULL) return;
     if (root->charCode == letter)
     {
-        fwrite(path, 1, sizeof(char) * strlen(path), output);
-        // fprintf(output, "%s", path);
+        fprintf(output, "%s", path);
         return;
     }
     else if (root->left == NULL && root->right == NULL)
@@ -246,7 +245,7 @@ void codeLetter(FILE *output, char letter, Node *root, char path[], int prevSize
 
 void writeCoded(Node *root, char text[], int size)
 {
-    FILE *output = fopen("codificado.bin", "ab");
+    FILE *output = fopen("codificado.txt", "a");
     for (int i = 0; i < size; i++)
     {
         codeLetter(output, text[i], root, "", 0);
@@ -286,7 +285,7 @@ void decodeLetter(FILE *input, FILE *output, Node *root, Node *actual)
 
 void writeDecoded(Node *root)
 {
-    FILE *input = fopen("codificado.bin", "rb");
+    FILE *input = fopen("codificado.txt", "r");
     FILE *output = fopen("decodificado.txt", "a");
     decodeLetter(input, output, root, root);
     fclose(input);
@@ -298,7 +297,7 @@ int main()
 {
     FILE *origin = fopen("./amostra.txt", "r");
 
-    remove("codificado.bin");
+    remove("codificado.txt");
     remove("decodificado.txt");
 
     if (origin == NULL)
