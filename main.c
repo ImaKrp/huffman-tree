@@ -64,7 +64,8 @@ int toLower(char c)
 
 void createTree(Node *values[], int size)
 {
-    if(size == 1) {
+    if (size == 1)
+    {
         Node *node = (Node *)malloc(sizeof(Node));
         node->charCode = '\0';
         node->left = values[0];
@@ -160,7 +161,8 @@ void orderValues(Node *values[], char string[], int times[], int actualSize)
 
 void printCodification(Node *root, char path[], int prevSize)
 {
-    if(root==NULL) return;
+    if (root == NULL)
+        return;
     if (root->left == NULL && root->right == NULL)
     {
         if (root->charCode == '\n')
@@ -203,7 +205,8 @@ void printCodification(Node *root, char path[], int prevSize)
 
 void codeLetter(FILE *output, char letter, Node *root, char path[], int prevSize)
 {
-    if(root==NULL) return;
+    if (root == NULL)
+        return;
     if (root->charCode == letter)
     {
         fprintf(output, "%s", path);
@@ -313,7 +316,8 @@ int main()
         c = getc(origin);
     }
 
-    if(count == 0) {
+    if (count == 0)
+    {
         exit(0);
     }
 
@@ -370,7 +374,13 @@ int main()
     printCodification(root, "", 0);
 
     writeCoded(root, text, count);
-    writeDecoded(root);
+    writeDecoded(root);   
+
+    for (int i = 0; i < actualSize; i++)
+    {
+        free(values[i]);
+    }
+
     fclose(origin);
     return 0;
 }
