@@ -313,7 +313,13 @@ int main()
     }
 
     if (count == 0)
+    {
+        FILE *coded = fopen("codificado.txt", "w");
+        fclose(coded);
+        FILE *decoded = fopen("decodificado.txt", "w");
+        fclose(decoded);
         exit(0);
+    }
 
     int times[count];
     char string[count];
