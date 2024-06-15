@@ -10,49 +10,6 @@ typedef struct node
     struct node *right;
 } Node;
 
-void printArray(int arr[], int size)
-{
-    printf("[ ");
-    for (int i = 0; i < size; i++)
-    {
-        if (i < size - 1)
-            printf("%d, ", arr[i]);
-        else
-            printf("%d", arr[i]);
-    }
-    printf(" ]\n");
-}
-
-void printNodeCharArray(Node *arr[], int size)
-{
-    printf("[ ");
-    for (int i = 0; i < size; i++)
-    {
-        if (!arr[i])
-            printf("NULL");
-        if (arr[i])
-            printf("%c", arr[i]->charCode);
-        if (i < size - 1)
-            printf(", ");
-    }
-    printf(" ]\n");
-}
-
-void printNodeOccurrencesArray(Node *arr[], int size)
-{
-    printf("[ ");
-    for (int i = 0; i < size; i++)
-    {
-        if (!arr[i])
-            printf("NULL");
-        if (arr[i])
-            printf("%d", arr[i]->occurrences);
-        if (i < size - 1)
-            printf(", ");
-    }
-    printf(" ]\n");
-}
-
 int toLower(char c)
 {
     if (c >= 65 && c <= 90)
@@ -89,25 +46,14 @@ void createTree(Node *values[], int size)
         {
             if (values[j] == NULL)
                 continue;
-            if (values[j]->occurrences < newOccurences)
-            {
-                values[curr] = values[j];
-                values[j] = NULL;
-                curr++;
-                continue;
-            }
             if (values[j]->occurrences >= newOccurences && spaced == 0)
             {
                 spaced = 1;
                 curr++;
             }
-            if (values[j]->occurrences >= newOccurences)
-            {
-                values[curr] = values[j];
-                values[j] = NULL;
-                curr++;
-                continue;
-            }
+            values[curr] = values[j];
+            values[j] = NULL;
+            curr++;
         }
         int j = 0;
         while (1)
@@ -212,8 +158,6 @@ void codeLetter(FILE *output, char letter, Node *root, char path[], int prevSize
         fprintf(output, "%s", path);
         return;
     }
-    else if (root->left == NULL && root->right == NULL)
-        return;
 
     int size = prevSize + 2;
     char left[size];
@@ -257,31 +201,24 @@ void writeCoded(Node *root, char text[], int size)
 
 void decodeLetter(FILE *input, FILE *output, Node *root, Node *actual)
 {
+    if (actual == NULL)
+        return;
+
+    if (actual->charCode != '\0')
+    {
+        fprintf(output, "%c", actual->charCode);
+        decodeLetter(input, output, root, root);
+        return;
+    }
     char c = getc(input);
 
-    if (c == EOF || actual == NULL)
+    if (c == EOF)
         return;
 
     if (c == '1')
-    {
-        if (actual->right && actual->right->charCode != '\0')
-        {
-            fprintf(output, "%c", actual->right->charCode);
-            decodeLetter(input, output, root, root);
-            return;
-        }
         decodeLetter(input, output, root, actual->right);
-    }
-    else if (c == '0')
-    {
-        if (actual->left && actual->left->charCode != '\0')
-        {
-            fprintf(output, "%c", actual->left->charCode);
-            decodeLetter(input, output, root, root);
-            return;
-        }
+    else
         decodeLetter(input, output, root, actual->left);
-    }
 }
 
 void writeDecoded(Node *root)
@@ -323,21 +260,19 @@ int main()
 
     int times[count];
     char string[count];
-
     char text[count + 1];
 
     for (int i = 0; i < count; i++)
     {
-        times[i] = -1;
+        times[i] = 0;
         string[i] = '\0';
         text[i] = '\0';
     }
 
     text[count] = '\0';
-
     rewind(origin);
-
     int actualSize = 0;
+
     for (int i = 0; i < count; i++)
     {
         int flag = -1;
@@ -368,12 +303,9 @@ int main()
     Node *values[actualSize];
 
     orderValues(values, string, times, actualSize);
-
     createTree(values, actualSize);
-
     Node *root = values[0];
     printCodification(root, "", 0);
-
     writeCoded(root, text, count);
     writeDecoded(root);
 
