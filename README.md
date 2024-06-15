@@ -496,7 +496,13 @@ int main()
     }
 
     if (count == 0)
-        exit(0); // Sai do programa se o arquivo estiver vazio
+    {
+        FILE *coded = fopen("codificado.txt", "w");
+        fclose(coded);
+        FILE *decoded = fopen("decodificado.txt", "w");
+        fclose(decoded);
+        exit(0);
+    } // Sai do programa se o arquivo estiver vazio
 
     // Declara arrays para armazenar os caracteres e suas ocorrências
     int times[count];
