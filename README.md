@@ -111,7 +111,6 @@ int toLower(char c)
 ```c
 void orderValues(Node *values[], char string[], int times[], int actualSize)
 {
-    // Cria nós para cada caractere com suas ocorrências
     for (int i = 0; i < actualSize; i++)
     {
         Node *node = (Node *)malloc(sizeof(Node));
@@ -122,27 +121,30 @@ void orderValues(Node *values[], char string[], int times[], int actualSize)
         values[i] = node;
     }
 
-    // Ordena os nós com base nas ocorrências e nos caracteres associados
-    for (int i = 0; i < actualSize; i++)
+    for (int i = 0; i < actualSize - 1; i++)
     {
-        for (int j = 0; j < actualSize; j++)
+        int swapped = 0;
+        for (int j = 0; j < actualSize - i - 1; j++)
         {
-            if (values[i]->occurrences < values[j]->occurrences)
+            if (values[j]->occurrences > values[j + 1]->occurrences)
             {
-                Node *temp = values[i];
-                values[i] = values[j];
-                values[j] = temp;
+                Node *temp = values[j];
+                values[j] = values[j + 1];
+                values[j + 1] = temp;
+                swapped = 1;
             }
-            else if (values[i]->occurrences == values[j]->occurrences)
+            if (values[j]->occurrences == values[j + 1]->occurrences)
             {
-                if (values[i]->charCode < values[j]->charCode)
+                if (values[j]->charCode > values[j + 1]->charCode)
                 {
-                    Node *temp = values[i];
-                    values[i] = values[j];
-                    values[j] = temp;
+                    Node *temp = values[j];
+                    values[j] = values[j + 1];
+                    values[j + 1] = temp;
+                    swapped = 1;
                 }
             }
         }
+        if(swapped == 0) break;
     }
 }
 ```
