@@ -1,3 +1,6 @@
+// Júlio Carvalho Gonçalves - 2311100012
+// Marco Antônio Duz - 2311100006
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -56,9 +59,9 @@ void createTree(Node *values[], int size)
             curr++;
         }
         int j = 0;
-        if(spaced == -1)
+        if (spaced == -1)
             values[size - i - 2] = node;
-        else 
+        else
             values[spaced] = node;
     }
 }
@@ -98,7 +101,8 @@ void orderValues(Node *values[], char string[], int times[], int actualSize)
                 }
             }
         }
-        if(swapped == 0) break;
+        if (swapped == 0)
+            break;
     }
 }
 
