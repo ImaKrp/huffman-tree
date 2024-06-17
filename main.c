@@ -41,14 +41,14 @@ void createTree(Node *values[], int size)
         values[1] = NULL;
 
         int curr = 0;
-        int spaced = 0;
+        int spaced = -1;
         for (int j = 0; j < size - i; j++)
         {
             if (values[j] == NULL)
                 continue;
-            if (values[j]->occurrences >= newOccurences && spaced == 0)
+            if (values[j]->occurrences >= newOccurences && spaced == -1)
             {
-                spaced = 1;
+                spaced = curr;
                 curr++;
             }
             values[curr] = values[j];
@@ -56,15 +56,10 @@ void createTree(Node *values[], int size)
             curr++;
         }
         int j = 0;
-        while (1)
-        {
-            if (values[j] == NULL)
-            {
-                values[j] = node;
-                break;
-            }
-            j++;
-        }
+        if(spaced == -1)
+            values[size - i - 2] = node;
+        else 
+            values[spaced] = node;
     }
 }
 
